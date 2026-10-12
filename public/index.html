@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="nl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Klusmaat - testversie</title>
+<style>
+:root{--bg:#fbf7f1;--card:#fff;--ink:#1d2a2f;--mut:#5d6b70;--acc:#e8702a;--acc2:#0f6b6b;--line:#e6dfd3}
+@media (prefers-color-scheme:dark){:root{--bg:#14201f;--card:#1c2c2b;--ink:#f3efe7;--mut:#a9b8b6;--line:#2f4442}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Segoe UI",system-ui,-apple-system,sans-serif;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;line-height:1.15;margin:0}
+.wrap{max-width:1000px;margin:0 auto;padding:0 18px 50px}
+.demo{background:var(--acc2);color:#fff;font-size:13px;text-align:center;padding:6px 10px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:14px 0;gap:10px;flex-wrap:wrap}
+.logo{font:700 24px Georgia,serif;cursor:pointer}.logo span{color:var(--acc)}
+.seg{display:flex;background:var(--card);border:1.5px solid var(--line);border-radius:999px;padding:3px}
+.seg button{border:0;background:transparent;color:var(--ink);padding:7px 14px;border-radius:999px;font:600 14px inherit;cursor:pointer}
+.seg button.on{background:var(--acc2);color:#fff}
+.btn{background:var(--acc);color:#fff;border:0;border-radius:999px;padding:11px 22px;font:600 15px inherit;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.sm,.mini{font-size:13px;padding:6px 13px}
+.mini{border-radius:99px;border:1.5px solid var(--line);background:transparent;color:var(--ink);cursor:pointer;font-family:inherit}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;padding:16px 0 10px}
+.hero h1{font-size:clamp(30px,6vw,48px)}.hero p{color:var(--mut);font-size:18px}.hero svg{width:100%;height:auto;border-radius:24px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{background:var(--card);border:1.5px solid var(--line);border-radius:999px;padding:8px 15px;font-size:14px;color:var(--ink);cursor:pointer}
+.chip.on{background:var(--acc2);color:#fff;border-color:var(--acc2)}
+h2{font-size:26px;margin:26px 0 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.tile{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:18px 14px;text-align:left;cursor:pointer;color:var(--ink);font:inherit}
+.tile:hover,.tile.on{border-color:var(--acc)}.tile b{display:block}.tile.sm{padding:12px 14px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin:14px 0}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px}
+.k{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}
+.lg{width:48px;height:48px;border-radius:12px;object-fit:cover;background:var(--acc2);color:#fff;display:flex;align-items:center;justify-content:center;font:700 19px Georgia,serif;flex:none}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.fl{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.mut{color:var(--mut);font-size:14px}.pill{font-size:12px;padding:2px 9px;border-radius:99px;background:#e8702a22;color:var(--acc)}.pill.ok{background:#1f9d6a22;color:#1f9d6a}
+.thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.thumbs img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px}
+dialog{border:0;border-radius:22px;padding:0;max-width:560px;width:calc(100% - 24px);background:var(--card);color:var(--ink)}
+dialog::backdrop{background:#0008}dialog .in{padding:22px;max-height:88vh;overflow-y:auto}
+label{display:block;font-size:13px;font-weight:600;margin:12px 0 4px;color:var(--mut)}
+input,select,textarea{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:inherit}
+input[type=checkbox]{width:auto}
+.steps{font-size:13px;font-weight:700;color:var(--acc2);text-transform:uppercase;letter-spacing:.04em;margin-top:10px}
+.msg{margin-top:12px;font-size:14px;padding:10px 12px;border-radius:10px;background:#e8702a22}.msg.ok{background:#1f9d6a22}
+.hide{display:none}.contact{background:#1f9d6a15;border:1px solid #1f9d6a55;border-radius:12px;padding:10px 12px;margin-top:10px;font-size:14px}
+details.more{position:relative}details.more summary{list-style:none;background:var(--card);border:1.5px dashed var(--acc2);color:var(--acc2);border-radius:999px;padding:8px 15px;font-size:14px;cursor:pointer;font-weight:600}
+details.more summary::-webkit-details-marker{display:none}
+.menu{position:absolute;z-index:5;top:44px;left:0;min-width:210px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:8px;box-shadow:0 10px 30px #0003;display:grid}
+.menu span{padding:7px 10px;border-radius:8px;font-size:14px;cursor:pointer}.menu span:hover,.menu span.on{background:var(--acc2);color:#fff}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+table{border-collapse:collapse;width:100%;font-size:14px}td,th{text-align:left;padding:7px;border-bottom:1px solid var(--line);vertical-align:top}.tbl{overflow-x:auto}
+.grp{margin-top:12px}.grp b{font-size:13px;color:var(--acc2)}
+.proj{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}.proj img{width:56px;height:42px;object-fit:cover;border-radius:8px}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;font-size:14px;z-index:99;max-width:90%}
+.msgs{max-height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.b{padding:8px 12px;border-radius:14px;max-width:80%;font-size:14px;background:var(--bg);border:1px solid var(--line);align-self:flex-start}
+.b.me{align-self:flex-end;background:var(--acc2);color:#fff;border-color:var(--acc2)}.b small{display:block;opacity:.7;font-size:11px}
+#uitlog[hidden]{display:none}
+.uspg{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.usp{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px}.usp i{font-style:normal;font-size:26px;display:block;margin-bottom:6px}.usp b{display:block;margin-bottom:4px}
+.stap{display:flex;gap:12px;align-items:flex-start}.stap .nr{flex:none;width:34px;height:34px;border-radius:50%;background:var(--acc);color:#fff;font:700 16px Georgia,serif;display:flex;align-items:center;justify-content:center}
+.band{background:var(--acc2);color:#fff;border-radius:24px;padding:26px;margin:30px 0;display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}.band h2{margin:0;color:#fff}.band p{margin:6px 0 0;opacity:.9}.band .btn{background:#fff;color:var(--acc2)}
+.faq details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:0;margin-bottom:8px}.faq summary{cursor:pointer;padding:14px 16px;font-weight:600;list-style:none}.faq summary::-webkit-details-marker{display:none}.faq summary:after{content:"+";float:right;color:var(--acc)}.faq details[open] summary:after{content:"\2212"}.faq details p{margin:0;padding:0 16px 14px;color:var(--mut)}
+.art{max-width:720px;margin:0 auto}.art h1{font-size:clamp(28px,5vw,40px);margin:8px 0 6px}.art h3{font-size:22px;margin:24px 0 6px}.art p,.art li{font-size:17px}.art img.cover{width:100%;border-radius:18px;margin:12px 0}
+.bc{aspect-ratio:16/9;background:linear-gradient(135deg,var(--acc2),var(--acc));border-radius:12px;margin-bottom:10px;object-fit:cover;width:100%;display:flex;align-items:flex-end;padding:10px;color:#fff;font-size:12px}
+a.k{display:block;color:inherit;text-decoration:none;cursor:pointer}a.k:hover{border-color:var(--acc)}
+footer{margin-top:40px;padding:20px 0;border-top:1px solid var(--line);color:var(--mut);font-size:13px;text-align:center}
+
+@media(max-width:700px){.hero,.row{grid-template-columns:1fr}}
+</style></head><body>
+<div class="demo">Testversie met nepdata. E-mailmeldingen staan nog uit.</div>
+<div class="wrap">
+<nav><div class="logo" id="logo">Klus<span>maat</span></div><div class="seg" id="nav"></div><button class="mini" id="uitlog" data-a="logout" hidden>Uitloggen</button></nav>
+<main id="app"><p class="mut">Laden...</p></main>
+<footer>Klusmaat &middot; testversie &middot; Roosendaal, Bergen op Zoom en omgeving</footer>
+</div>
+<div id="toast" class="hide"></div>
+
+<dialog id="dC"><div class="in"><h3>In welke plaats moet de klus worden uitgevoerd?</h3><p class="mut">We werken in Roosendaal, Bergen op Zoom en tot 10 km eromheen.</p><div class="chips" id="cg"></div><button class="btn ghost" data-close style="margin-top:16px">Annuleren</button></div></dialog>
+
+<dialog id="dF"><div class="in">
+ <h3 id="ft"></h3><div class="mut" id="fs"></div>
+ <div id="s1"><div class="steps">Stap 1 van 2 &middot; Over de klus</div>
+  <label>Omschrijving</label><textarea id="d" rows="4" maxlength="2000" placeholder="Wat moet er gebeuren? Afmetingen, materialen, bijzonderheden..."></textarea>
+  <label>Gewenste periode</label><select id="w"><option>Zo snel mogelijk</option><option>Binnen 2 weken</option><option>Binnen een maand</option><option>Flexibel</option></select>
+  <div class="msg hide" id="m1"></div>
+  <div class="fl" style="margin-top:16px"><button class="btn" id="nx">Volgende</button><button class="btn ghost" data-close>Annuleren</button></div></div>
+ <div id="s2" class="hide"><div class="steps">Stap 2 van 2 &middot; Jouw gegevens</div>
+  <label>Naam</label><input id="n" maxlength="120" autocomplete="name">
+  <label>Adres (straat + huisnummer)</label><input id="a" maxlength="160" autocomplete="street-address">
+  <div class="row"><div><label>Postcode</label><input id="pc" placeholder="4701 AB" autocomplete="postal-code"></div><div><label>Plaats</label><input id="pl" readonly style="opacity:.8"></div></div>
+  <div class="row"><div><label>Telefoon</label><input id="t" type="tel" maxlength="30"></div><div><label>E-mail</label><input id="e" type="email" maxlength="160"></div></div>
+  <label>Wanneer mag er gebeld worden? (optioneel)</label><input id="b" maxlength="200" placeholder="Bijv. werkdagen na 17:00">
+  <div style="position:absolute;left:-9999px" aria-hidden="true"><input id="hp" tabindex="-1" autocomplete="off"></div>
+  <label>Hoeveel klussers mogen reageren?</label><div class="chips" id="sw"></div>
+  <label style="display:flex;gap:8px;align-items:flex-start;margin-top:14px"><input type="checkbox" id="pv"> Ik ga akkoord met de privacyverklaring (volgt voor de livegang).</label>
+  <div class="msg hide" id="m2"></div>
+  <div class="fl" style="margin-top:16px"><button class="btn" id="go">Aanvraag versturen</button><button class="btn ghost" id="bk">Terug</button></div></div>
+ <div id="s3" class="hide"><div class="msg ok" style="margin-top:16px"><b>Bedankt, je aanvraag is geplaatst.</b></div>
+<p class="mut">Hieronder staat je persoonlijke link. Hiermee zie je reacties van klussers en chat je met ze. E-mail staat nog uit, bewaar de link dus goed:</p>
+<p class="mut" id="cl" style="word-break:break-all"></p>
+<div class="panel"><b>Account met eigen wachtwoord?</b>
+<p class="mut">Maak een account om altijd in te kunnen loggen en al je aanvragen te zien. Liever niet? Dan gebruik je alleen de unieke link.</p>
+<input id="kpw" type="password" placeholder="Kies een wachtwoord (minimaal 8 tekens)" autocomplete="new-password">
+<div class="msg hide" id="m3"></div>
+<div class="fl" style="margin-top:12px"><button class="btn" data-a="kacc">Account maken</button><button class="btn ghost" data-a="kgeen">Geen wachtwoord, alleen de link</button></div></div></div>
+</div></dialog>
+
+<dialog id="dU"><div class="in"><h3>Contactgegevens bekijken?</h3><p id="ut" class="mut"></p><table id="uk"></table>
+ <p class="mut">Je betaalt eenmalig voor deze klus. Daarna blijft hij ontgrendeld. Er mogen maximaal <span id="um"></span> klussers reageren.</p>
+ <div class="fl" style="margin-top:14px"><button class="btn" data-a="doU">Akkoord, gegevens tonen</button><button class="btn ghost" data-close>Annuleren</button></div></div></dialog>
+
+<dialog id="dJ"><div class="in"><h3>Project toevoegen</h3>
+ <label>Titel</label><input id="jt" maxlength="120"><label>Informatie</label><textarea id="ji" rows="4" maxlength="2000"></textarea>
+ <label>Beeld</label><input id="jf" type="file" accept="image/*"><img id="jprev" class="hide" style="width:100%;border-radius:12px;margin-top:8px" alt="">
+ <div class="msg hide" id="jm"></div>
+ <div class="fl" style="margin-top:16px"><button class="btn" data-a="jpub">Toevoegen</button><button class="btn ghost" data-a="jdraft">Concept</button><button class="btn ghost" data-close>Annuleren</button></div></div></dialog>
+
+<dialog id="dR"><div class="in"><h3>Beoordeel de klusser</h3>
+<div id="r1"><p>Is de klus uitgevoerd door <b id="rn"></b>?</p><div class="fl"><button class="btn" data-a="rja">Ja</button><button class="btn ghost" data-a="rnee">Nee</button><button class="btn ghost" data-close>Annuleren</button></div></div>
+<div id="r2" class="hide"><p>Hoeveel sterren geef je?</p><div class="chips" id="rst"></div><label>Toelichting (optioneel)</label><textarea id="rt" rows="3" maxlength="1000"></textarea><div class="msg hide" id="rm"></div><div class="fl" style="margin-top:14px"><button class="btn" data-a="rsend">Versturen</button><button class="btn ghost" data-close>Annuleren</button></div></div></div></dialog>
+<dialog id="dB"><div class="in"><h3>Artikel</h3>
+<label>Titel</label><input id="bt1" maxlength="160"><label>Adres (slug, alleen kleine letters en streepjes)</label><input id="bs" maxlength="120" placeholder="bijv. tv-ophangen">
+<div class="row"><div><label>Rubriek</label><input id="br" maxlength="80"></div><div><label>Status</label><select id="bst"><option value="concept">Concept</option><option value="gepubliceerd">Gepubliceerd</option></select></div></div>
+<label>Samenvatting (voor het overzicht)</label><textarea id="bsa" rows="2" maxlength="300"></textarea>
+<label>Inhoud (## Kop, - lijstpunt, 1. genummerde stap, **vet**, lege regel = nieuwe alinea)</label><textarea id="bin" rows="12"></textarea>
+<label>Beeld (optioneel)</label><input id="bf" type="file" accept="image/*"><img id="bprev" class="hide" style="width:100%;border-radius:12px;margin-top:8px" alt="">
+<div class="msg hide" id="bm"></div>
+<div class="fl" style="margin-top:16px"><button class="btn" data-a="bsave">Opslaan</button><button class="btn ghost" data-close>Annuleren</button></div></div></dialog>
+<dialog id="dQ"><div class="in"><h3>Veelgestelde vraag</h3>
+<label>Vraag</label><input id="qv" maxlength="200"><label>Antwoord</label><textarea id="qa" rows="6"></textarea>
+<div class="row"><div><label>Volgorde (laag = eerst)</label><input id="qo" type="number" value="100"></div><div><label>Zichtbaar</label><select id="qz"><option value="1">Ja</option><option value="0">Nee</option></select></div></div>
+<div class="msg hide" id="qm"></div>
+<div class="fl" style="margin-top:16px"><button class="btn" data-a="qsave">Opslaan</button><button class="btn ghost" data-close>Annuleren</button></div></div></dialog>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="app.js"></script></body></html>
