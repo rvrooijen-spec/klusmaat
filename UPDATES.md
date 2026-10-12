@@ -29,6 +29,6 @@ Klant plaatst een aanvraag, klusser aanmelden en goedkeuren, profiel en werkgebi
 Foutmonitoring (Sentry), uptime-monitor, Dependabot voor pakketupdates en elk kwartaal een restore-test van de back-up.
 
 ## Migratielijst (stand testproject)
-001 basis, 002 voorbereiding fase 2/3, 003 logboek, 004 beveiliging, 005 aanvraag indienen, 005 aanvraag en portfolio publiek, 006 chat/reviews/kwaliteitsdrempel, 007 mailwachtrij (tabel staat klaar; e-mail versturen is nog uitgeschakeld), 008 blog en FAQ, 009 extra artikelen, 010 rechten aangescherpt en view klusser_expertise_publiek, 011 vaste search_path voor blog_tijdstempel. Nummers worden niet hergebruikt: nieuwe migraties beginnen bij 012.
+001 basis, 002 voorbereiding fase 2/3, 003 logboek, 004 beveiliging, 005 aanvraag indienen, 005 aanvraag en portfolio publiek, 006 chat/reviews/kwaliteitsdrempel, 007 mailwachtrij (tabel staat klaar; e-mail versturen is nog uitgeschakeld), 008 blog en FAQ, 009 extra artikelen, 010 rechten aangescherpt en view klusser_expertise_publiek, 011 vaste search_path voor blog_tijdstempel, 012 opslag van afbeeldingen in Supabase Storage (bucket afbeeldingen). Nummers worden niet hergebruikt: nieuwe migraties beginnen bij 013.
 
 Let op: sinds 010 krijgen nieuwe tabellen geen automatische rechten voor anon of authenticated. Geef in de migratie van een nieuwe tabel expliciet `grant select/insert/update/delete` en zet RLS aan. De oude functie aanvraag_indienen is alleen onbereikbaar gemaakt (execute ingetrokken), niet verwijderd.

@@ -1,7 +1,12 @@
 const sb=supabase.createClient("https://kluipewrewyjseoxnyuc.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtsdWlwZXdyZXd5anNlb3hueXVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE0OTg0OTIsImV4cCI6MjEwNzA3NDQ5Mn0.zynIATfgNVXbtxYezQ_xEn2CLjTPDCdjQJtDXMZA0kU");
 const $=id=>document.getElementById(id);
 const esc=t=>String(t??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const img=u=>typeof u==="string"&&u.startsWith("data:image/")?u:"";
+const BUCKET="https://kluipewrewyjseoxnyuc.supabase.co/storage/v1/object/public/afbeeldingen/";
+const img=u=>typeof u==="string"&&(u.startsWith("data:image/")||u.startsWith(BUCKET))?u:"";
+async function naarOpslag(data,map){if(!data||!data.startsWith("data:"))return data||null;
+ const blob=await (await fetch(data)).blob(),ext=blob.type==="image/png"?"png":"jpg",pad=map+"/"+Date.now()+"-"+Math.random().toString(36).slice(2,8)+"."+ext;
+ const r=await sb.storage.from("afbeeldingen").upload(pad,blob,{contentType:blob.type,cacheControl:"31536000"});
+ if(r.error)throw r.error;return sb.storage.from("afbeeldingen").getPublicUrl(pad).data.publicUrl;}
 const NL=(a,b)=>a.localeCompare(b,"nl");
 const MAIN=["Roosendaal","Bergen op Zoom"];
 const S={view:"klant",stad:"",cat:null,all:false,type:null,fstad:null,keuze:3,plaatsen:[],cats:[],set:{},user:null,admin:false,me:null,tab:"klussen",atab:"klussers",contact:{},pend:null,jData:"",logo:"",selP:new Set(),selT:new Set(),ready:false,slug:"",edit:null};
@@ -168,7 +173,8 @@ async function tProfiel(){const u=S.user.id;
  $("plf").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{S.logo=await resize(f,240,"image/png");$("plogo").innerHTML=logoHtml();}catch(_){flash("Dit beeld kon niet worden gelezen.",false);}};}
 const logoHtml=()=>img(S.logo)?`<img class="lg" src="${esc(S.logo)}" alt="">`:`<div class="lg">${esc((S.me.bedrijfsnaam||"?")[0].toUpperCase())}</div>`;
 async function saveProfiel(){const u=S.user.id,v=i=>$(i).value.trim();if(!v("pn"))return flash("Vul je bedrijfsnaam in.",false);
- const up=await sb.from("klussers").update({bedrijfsnaam:v("pn"),contactnaam:v("pc2"),telefoon:v("pt"),website:v("pw"),kvk:v("pk"),over:v("po"),logo_pad:S.logo||null}).eq("id",u);if(up.error)return fail(up.error);
+ let logo=S.logo||null;try{logo=await naarOpslag(logo,"klusser/"+u);}catch(e){return fail(e);}S.logo=logo||"";
+ const up=await sb.from("klussers").update({bedrijfsnaam:v("pn"),contactnaam:v("pc2"),telefoon:v("pt"),website:v("pw"),kvk:v("pk"),over:v("po"),logo_pad:logo}).eq("id",u);if(up.error)return fail(up.error);
  let r=await sb.from("klusser_plaatsen").delete().eq("klusser_id",u);if(r.error)return fail(r.error);
  if(S.selP.size){r=await sb.from("klusser_plaatsen").insert([...S.selP].map(id=>({klusser_id:u,plaats_id:id})));if(r.error)return fail(r.error);}
  r=await sb.from("klusser_klustypen").delete().eq("klusser_id",u);if(r.error)return fail(r.error);
@@ -180,7 +186,8 @@ async function tPortfolio(){
  $("tabc").innerHTML=`<button class="btn" data-a="padd">+ Voeg project toe</button><div class="panel">${(data||[]).map(p=>{const g=p.status==="gepubliceerd";
   return `<div class="proj">${img(p.beeld_pad)?`<img src="${esc(p.beeld_pad)}" alt="">`:""}<div style="flex:1"><b>${esc(p.titel)}</b><br><span class="pill${g?' ok':''}">${g?"Gepubliceerd":"Concept"}</span></div>${g?"":`<button class="mini" data-a="ppub" data-v="${p.id}">Publiceren</button>`}<button class="mini" data-a="pdel" data-v="${p.id}">Verwijder</button></div>`;}).join("")||'<p class="mut">Nog geen projecten.</p>'}</div>`;}
 async function saveProj(status){if(!$("jt").value.trim()||!$("ji").value.trim()){$("jm").className="msg";$("jm").textContent="Titel en informatie zijn verplicht.";return;}
- const r=await sb.from("portfolio_projecten").insert({klusser_id:S.user.id,titel:$("jt").value.trim(),info:$("ji").value.trim(),beeld_pad:S.jData||null,status});
+ let bp=null;try{bp=await naarOpslag(S.jData,"klusser/"+S.user.id);}catch(e){$("jm").className="msg";$("jm").textContent=e.message;return;}
+ const r=await sb.from("portfolio_projecten").insert({klusser_id:S.user.id,titel:$("jt").value.trim(),info:$("ji").value.trim(),beeld_pad:bp,status});
  if(r.error){$("jm").className="msg";$("jm").textContent=r.error.message;return;}$("dJ").close();tPortfolio();}
 
 /* ---------- admin ---------- */
@@ -251,7 +258,9 @@ document.addEventListener("click",async e=>{
  if(act==="gadd"){const t=a.dataset.t,cid=a.dataset.c,naam=$("g_new_"+t+(cid?"_"+cid:"")).value.trim(),slug=slugify(naam);
   if(!naam||!slug)return flash("Vul een naam in.",false);
   const r=await sb.from(t).insert(t==="klustypen"?{categorie_id:cid,naam,slug}:{naam,slug});if(r.error)return fail(r.error.code==="23505"?{message:"Deze naam bestaat al."}:r.error);await laad();flash("Toegevoegd.",true);return vAdmin();}
- if(act==="gdel"){const t=a.dataset.t;if(!confirm("Dit item verwijderen? Gebruik bij twijfel liever niet actief."))return;
+ if(act==="gdel"){const t=a.dataset.t;let tekst="Dit item verwijderen? Gebruik bij twijfel liever niet actief.";
+  if(t==="categorieen"){const c=await sb.from("klustypen").select("*",{count:"exact",head:true}).eq("categorie_id",v);tekst="Deze categorie verwijderen"+(c.count?" samen met de "+c.count+" typen klus erin":"")+"? Bestaande aanvragen en klusser-expertises in deze categorie kunnen dan niet meer worden getoond. Zet de categorie bij twijfel liever op niet actief.";}
+  if(!confirm(tekst))return;
   const r=await sb.from(t).delete().eq("id",v);if(r.error)return fail(r.error.code==="23503"?{message:"Dit item is in gebruik en kan niet worden verwijderd. Zet het op niet actief."}:r.error);await laad();flash("Verwijderd.",true);return vAdmin();}
  if(act==="atab"){S.atab=v;return render();}
  if(act==="st"){const r=await sb.from("klussers").update({status:v}).eq("id",a.dataset.id);if(r.error)return fail(r.error);flash("Status bijgewerkt.",true);return vAdmin();}
@@ -355,7 +364,8 @@ S.edit=x;S.bimg=x.beeld_pad||"";$("bt1").value=x.titel;$("bs").value=x.slug;$("b
 $("bprev").src=img(S.bimg)||"";$("bprev").className=img(S.bimg)?"":"hide";$("bm").className="msg hide";return $("dB").showModal();}
 if(act==="bsave"){const t=$("bt1").value.trim(),sl=($("bs").value.trim()||slugify(t)),bm=(x)=>{$("bm").className="msg";$("bm").textContent=x;};
 if(!t||!$("bin").value.trim())return bm("Titel en inhoud zijn verplicht.");if(!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(sl))return bm("Het adres mag alleen kleine letters, cijfers en streepjes bevatten.");
-const row={titel:t,slug:sl,rubriek:$("br").value.trim()||null,status:$("bst").value,samenvatting:$("bsa").value.trim()||null,inhoud:$("bin").value,beeld_pad:S.bimg||null};
+const row={titel:t,slug:sl,rubriek:$("br").value.trim()||null,status:$("bst").value,samenvatting:$("bsa").value.trim()||null,inhoud:$("bin").value,beeld_pad:null};
+try{row.beeld_pad=await naarOpslag(S.bimg,"blog");}catch(e){return bm(e.message);}
 const r=S.edit&&S.edit.id?await sb.from("blog_artikelen").update(row).eq("id",S.edit.id):await sb.from("blog_artikelen").insert(row);
 if(r.error)return bm(r.error.code==="23505"?"Dit adres is al in gebruik.":r.error.message);$("dB").close();flash("Artikel opgeslagen.",true);return vAdmin();}
 if(act==="bdel"){if(!confirm("Artikel verwijderen?"))return;const r=await sb.from("blog_artikelen").delete().eq("id",v);if(r.error)return fail(r.error);return vAdmin();}
