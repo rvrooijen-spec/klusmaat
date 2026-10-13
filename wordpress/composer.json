@@ -1,0 +1,10 @@
+{
+  "name": "klusmaat/wordpress",
+  "description": "Klusmaat op WordPress: plugin Klusmaat Core met tests",
+  "type": "project",
+  "license": "proprietary",
+  "require": { "php": ">=8.1", "ext-pdo": "*" },
+  "autoload": { "psr-4": { "Klusmaat\\Core\\": "plugins/klusmaat-core/src/" } },
+  "autoload-dev": { "psr-4": { "Klusmaat\\Core\\Tests\\": "tests/" } },
+  "scripts": { "test": "php tests/run.php" }
+}
