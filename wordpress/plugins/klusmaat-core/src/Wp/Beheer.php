@@ -160,7 +160,11 @@ final class Beheer
     public static function klusSluiten(): void
     {
         self::eis('klusmaat_klus_sluiten');
-        $gelukt = Plugin::kern()->aanvragen->sluitenDoorBeheerder(absint($_POST['klus_id'] ?? 0), get_current_user_id());
+        $klusId = absint($_POST['klus_id'] ?? 0);
+        $gelukt = Plugin::kern()->aanvragen->sluitenDoorBeheerder($klusId, get_current_user_id());
+        if ($gelukt) {
+            do_action('klusmaat_klus_gesloten', $klusId, 'beheer');
+        }
         self::terug('klusmaat-klussen', $gelukt ? 'Klus gesloten.' : 'Deze klus was al gesloten.', $gelukt);
     }
 
@@ -218,6 +222,7 @@ final class Beheer
                 'blokkeren' => $k->blokkeren($uid, $beheerder, 'door beheerder'),
                 default => throw new KlusmaatFout(KlusmaatFout::ONGELDIG, 'Onbekende actie.'),
             };
+            do_action('klusmaat_klusser_status_gewijzigd', $uid, ['goedkeuren' => 'goedgekeurd', 'afkeuren' => 'afgekeurd', 'blokkeren' => 'geblokkeerd'][$wijziging], $beheerder);
             self::terug('klusmaat-klussers', 'Klusser bijgewerkt.');
         } catch (KlusmaatFout $f) {
             self::terug('klusmaat-klussers', $f->getMessage(), false);

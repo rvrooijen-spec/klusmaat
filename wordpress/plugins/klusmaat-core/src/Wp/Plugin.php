@@ -26,7 +26,7 @@ final class Plugin
     ];
 
     /** Pagina's met persoonlijke gegevens: niet bewaren, niet indexeren. */
-    private const PRIVE = ['werkbon', 'mijn_klus', 'klusser_worden', 'inloggen', 'dashboard'];
+    private const PRIVE = ['werkbon', 'mijn_klus', 'inloggen', 'dashboard'];
 
     private static ?Kern $kern = null;
 
@@ -39,6 +39,7 @@ final class Plugin
         add_filter('wp_robots', [self::class, 'robots']);
         add_filter('show_admin_bar', [self::class, 'adminbalk']);
         add_filter('body_class', [self::class, 'lichaamsklasse']);
+        add_filter('language_attributes', [self::class, 'taal']);
         add_action('admin_init', [self::class, 'houKlussersUitBeheer']);
         add_action('klusmaat_dagelijks', [self::class, 'dagelijks']);
         add_action('wp_enqueue_scripts', [self::class, 'scripts']);
@@ -89,6 +90,13 @@ final class Plugin
             }
         }
         return $klassen;
+    }
+
+    /** De site is alleen Nederlands: zoekmachines krijgen lang=\"nl-NL\", ook als WordPress op Engels staat. */
+    public static function taal(string $uitvoer): string
+    {
+        $schoon = preg_replace('/(^|\s)lang="[^"]*"/', '', $uitvoer);
+        return trim((string) $schoon) . ' lang="nl-NL"';
     }
 
     public static function registreer(): void
@@ -183,6 +191,9 @@ final class Plugin
             $meldingen = ['De dagelijkse controle gaf een fout: ' . $e->getMessage()];
         }
         update_option('klusmaat_controle', ['tijd' => time(), 'meldingen' => $meldingen], false);
+        if ($meldingen !== []) {
+            do_action('klusmaat_controle_mislukt', $meldingen);
+        }
     }
 
     /** Draait na een update van de plugin: tabellen bijwerken als de versie is veranderd. */

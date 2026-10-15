@@ -32,6 +32,7 @@ final class Artikelen
         add_filter('the_content', [self::class, 'inhoud'], 20);
         add_action('wp_head', [self::class, 'gestructureerdeGegevens']);
         add_shortcode('klusmaat_artikelen', [self::class, 'overzicht']);
+        add_filter('wp_robots', [self::class, 'robots']);
         add_filter('manage_' . self::TYPE . '_posts_columns', [self::class, 'kolommen']);
         add_action('manage_' . self::TYPE . '_posts_custom_column', [self::class, 'kolomWaarde'], 10, 2);
     }
@@ -403,6 +404,18 @@ nummer()})();</script>';
     }
 
     // Zoekmachines
+
+    /** Gefilterde overzichten (?soort=, ?klus=) zijn dubbele inhoud: niet indexeren, wel de links volgen. */
+    public static function robots(array $r): array
+    {
+        $id = (int) get_option('klusmaat_blog_pagina', 0);
+        if ($id > 0 && is_page($id) && (isset($_GET['soort']) || isset($_GET['klus']))) {
+            $r['noindex'] = true;
+            $r['follow'] = true;
+            unset($r['index']);
+        }
+        return $r;
+    }
 
     public static function gestructureerdeGegevens(): void
     {

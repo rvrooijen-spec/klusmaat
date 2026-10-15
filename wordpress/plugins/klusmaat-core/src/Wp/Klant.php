@@ -83,6 +83,10 @@ final class Klant
         }
         try {
             $gesloten = Plugin::kern()->aanvragen->sluitenMetLink($token);
+            if ($gesloten) {
+                $rij = Plugin::kern()->aanvragen->voorKlant($token);
+                do_action('klusmaat_klus_gesloten', (int) ($rij['id'] ?? 0), 'klant');
+            }
             self::$sluitMelding = $gesloten ? 'Je klus is gesloten. Klussers kunnen hem niet meer oppakken.' : 'Deze klus was al gesloten.';
         } catch (KlusmaatFout $f) {
             self::$sluitMelding = $f->getMessage();

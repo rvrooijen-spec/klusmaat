@@ -114,6 +114,7 @@ final class Klusser
         update_user_meta($id, self::META_TELEFOON, $w['telefoon']);
         try {
             Plugin::kern()->klussers->aanmelden((int) $id);
+            do_action('klusmaat_klusser_aangemeld', (int) $id);
         } catch (\Throwable $e) {
             error_log('Klusmaat aanmelden: ' . $e->getMessage());
         }
@@ -206,6 +207,7 @@ final class Klusser
         }
         try {
             $r = Plugin::kern()->oppakken->uitvoeren($klusId, get_current_user_id());
+            do_action('klusmaat_klus_opgepakt', $klusId, get_current_user_id(), $r);
             self::$meldingSoort = 'goed';
             self::$melding = 'Je hebt de klus opgepakt. De gegevens van de klant staan bij Mijn opgepakte klussen.' . ($r['kosten'] > 0 ? ' Je saldo is nu ' . $r['saldo'] . '.' : '');
         } catch (KlusmaatFout $f) {
@@ -286,6 +288,8 @@ final class Klusser
             }
             $h .= '</tbody></table></div>';
         }
+        // Uitbreidingen (bijvoorbeeld mailvoorkeuren) mogen een blok toevoegen.
+        $h .= (string) apply_filters('klusmaat_dashboard_blokken', '', $uid);
         return Weergave::pagina($h . $uitloggen);
     }
 
