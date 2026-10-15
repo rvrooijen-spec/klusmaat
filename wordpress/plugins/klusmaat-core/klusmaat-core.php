@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Klusmaat Core
  * Description: Kern van Klusmaat: klussen, klussers, credits en logboek. Alleen Nederland.
- * Version: 0.2.0
+ * Version: 0.2.1
  * Requires PHP: 8.1
  * Requires at least: 6.5
  * Text Domain: klusmaat

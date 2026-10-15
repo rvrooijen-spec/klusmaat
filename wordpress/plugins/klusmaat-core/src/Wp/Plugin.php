@@ -9,7 +9,7 @@ use Klusmaat\Core\Schema;
 /** Verbindt de kern met WordPress: haken, taxonomieën, pagina's, rollen en de dagelijkse controle. */
 final class Plugin
 {
-    public const VERSIE = '0.2.0';
+    public const VERSIE = '0.2.1';
     public const ROL_KLUSSER = 'klusser';
     public const BEHEER = 'klusmaat_beheer';
 
