@@ -44,7 +44,7 @@ final class Artikelen
                 'edit_item' => 'Artikel bewerken', 'all_items' => 'Alle artikelen', 'search_items' => 'Artikelen zoeken', 'not_found' => 'Nog geen artikelen.',
             ],
             'public' => true, 'has_archive' => false, 'show_in_rest' => true, 'menu_icon' => 'dashicons-hammer', 'menu_position' => 27,
-            'supports' => ['title', 'editor', 'excerpt', 'thumbnail'], 'rewrite' => ['slug' => 'zelf-doen', 'with_front' => false],
+            'supports' => ['title', 'editor', 'excerpt', 'thumbnail'], 'rewrite' => ['slug' => 'blog', 'with_front' => false],
             'taxonomies' => [WpCatalogus::KLUSTYPE],
         ]);
         register_taxonomy_for_object_type(WpCatalogus::KLUSTYPE, self::TYPE);

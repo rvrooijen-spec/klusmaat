@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Klusmaat Blog
  * Description: Blog met stappenplannen en tips om een klus zelf te doen. Aanvulling op Klusmaat Core.
- * Version: 0.1.0
+ * Version: 0.1.1
  * Requires PHP: 8.1
  * Requires at least: 6.5
  * Requires Plugins: klusmaat-core

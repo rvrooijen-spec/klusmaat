@@ -6,8 +6,8 @@ namespace Klusmaat\Blog;
 /** Opstart van de child-plugin "Zelf doen". Werkt alleen als Klusmaat Core actief is. */
 final class Start
 {
-    public const VERSIE = '0.1.0';
-    private const SLUG = 'zelf-doen';
+    public const VERSIE = '0.1.1';
+    private const SLUG = 'blog';
 
     public static function kernActief(): bool
     {
@@ -54,6 +54,9 @@ final class Start
             $bestaand = get_page_by_path(self::SLUG);
             $id = $bestaand instanceof \WP_Post ? $bestaand->ID : (int) wp_insert_post(['post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Zelf doen', 'post_name' => self::SLUG, 'post_content' => '[klusmaat_artikelen]']);
             update_option('klusmaat_blog_pagina', $id, false);
+        }
+        if (get_post_field('post_name', $id) !== self::SLUG) {
+            wp_update_post(['ID' => $id, 'post_name' => self::SLUG]); // oudere installaties: /zelf-doen/ wordt /blog/
         }
         flush_rewrite_rules(false);
         update_option('klusmaat_blog_versie', self::VERSIE, false);
