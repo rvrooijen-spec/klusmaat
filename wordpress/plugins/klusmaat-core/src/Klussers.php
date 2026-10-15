@@ -31,6 +31,20 @@ final class Klussers
         $this->logboek->schrijf('klusser', $userId, 'klusser_aangemeld', 'klusser', $userId);
     }
 
+    /**
+     * Klussers voor het beheerscherm, nieuwste eerst. De aanroeper controleert zelf dat de gebruiker beheerder is.
+     *
+     * @return list<array<string,mixed>>
+     */
+    public function overzicht(?string $status = null): array
+    {
+        $waar = $status !== null ? ' WHERE status = ?' : '';
+        return $this->db->fetchAll(
+            'SELECT user_id, status, saldo, aangemaakt_op FROM ' . $this->db->tabel('klussers') . $waar . ' ORDER BY user_id DESC',
+            $status !== null ? [$status] : []
+        );
+    }
+
     public function status(int $userId): ?string
     {
         $status = $this->db->fetchValue('SELECT status FROM ' . $this->db->tabel('klussers') . ' WHERE user_id = ?', [$userId]);

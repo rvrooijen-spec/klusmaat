@@ -13,7 +13,7 @@ final class Schema
 {
     /** Kolommen per tabel; de tests vergelijken beide varianten hiermee. */
     public const KOLOMMEN = [
-        'aanvragen' => ['id', 'token_hash', 'klustype_id', 'plaats_id', 'omschrijving', 'gewenst_moment', 'naam', 'email', 'telefoon', 'adres', 'postcode', 'status', 'max_klussers', 'opgepakt_aantal', 'aangemaakt_op'],
+        'aanvragen' => ['id', 'token_hash', 'klustype_id', 'plaats_id', 'omschrijving', 'gewenst_moment', 'naam', 'email', 'telefoon', 'adres', 'postcode', 'status', 'max_klussers', 'opgepakt_aantal', 'aangemaakt_op', 'gesloten_op', 'geanonimiseerd_op'],
         'klussers' => ['user_id', 'status', 'saldo', 'aangemaakt_op'],
         'credit_boekingen' => ['id', 'user_id', 'delta', 'saldo_na', 'reden', 'toelichting', 'aanvraag_id', 'actor_id', 'aangemaakt_op'],
         'ontgrendelingen' => ['id', 'aanvraag_id', 'user_id', 'kosten', 'aangemaakt_op'],
@@ -41,6 +41,8 @@ final class Schema
   max_klussers smallint(5) unsigned NOT NULL,
   opgepakt_aantal smallint(5) unsigned NOT NULL DEFAULT 0,
   aangemaakt_op datetime NOT NULL,
+  gesloten_op datetime DEFAULT NULL,
+  geanonimiseerd_op datetime DEFAULT NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY token_hash (token_hash),
   KEY status_plaats (status,plaats_id)
@@ -130,7 +132,9 @@ final class Schema
   status TEXT NOT NULL DEFAULT 'open',
   max_klussers INTEGER NOT NULL,
   opgepakt_aantal INTEGER NOT NULL DEFAULT 0,
-  aangemaakt_op TEXT NOT NULL
+  aangemaakt_op TEXT NOT NULL,
+  gesloten_op TEXT,
+  geanonimiseerd_op TEXT
 )",
             "CREATE TABLE {$p}klussers (
   user_id INTEGER PRIMARY KEY,

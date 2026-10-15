@@ -11,13 +11,15 @@ final class Kern
     public readonly Klussers $klussers;
     public readonly Aanvragen $aanvragen;
     public readonly Oppakken $oppakken;
+    public readonly Controle $controle;
 
-    public function __construct(public readonly Database $db, public readonly Config $config)
+    public function __construct(public readonly Database $db, public readonly Config $config, ?Catalogus $catalogus = null)
     {
         $this->logboek = new Logboek($db, $config->logGeheim);
         $this->credits = new Credits($db, $this->logboek);
         $this->klussers = new Klussers($db, $config, $this->credits, $this->logboek);
-        $this->aanvragen = new Aanvragen($db, $config, $this->logboek);
+        $this->aanvragen = new Aanvragen($db, $config, $this->logboek, $catalogus);
         $this->oppakken = new Oppakken($db, $config, $this->credits, $this->logboek);
+        $this->controle = new Controle($db, $this->logboek);
     }
 }

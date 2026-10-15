@@ -32,7 +32,7 @@ textarea:focus-visible, summary:focus-visible { outline: 3px solid var(--km-inkt
 .km-woordmerk a, .km-kop .wp-block-site-title a { color: var(--km-inkt); text-decoration: none; }
 .km-menu { display: flex; flex-wrap: wrap; align-items: center; gap: 28px; font-size: 16px; font-weight: 600; }
 .km-menu a, .km-kop .wp-block-navigation a { color: var(--km-inkt); text-decoration: none; }
-.km-menu .km-knop-rand, .km-kop .wp-block-navigation .km-knop-rand a { border: 2px solid var(--km-inkt); padding: 8px 18px; }
+.km-menu a.km-knop-rand, .km-kop .wp-block-navigation .km-knop-rand a { border: 2px solid var(--km-inkt); padding: 8px 18px; }
 
 /* Hero */
 .km-hero { max-width: var(--km-breedte); margin-inline: auto; padding: 40px var(--km-ruimte-5) 88px;
@@ -80,7 +80,7 @@ textarea:focus-visible, summary:focus-visible { outline: 3px solid var(--km-inkt
 .km-knop, .wp-block-button__link, .km-bon button {
   display: inline-block; font-family: inherit; font-size: 18px; font-weight: 700; text-align: left; text-decoration: none;
   min-height: 56px; padding: 16px 24px; background: var(--km-inkt); color: var(--km-papier); border: 0; border-radius: 0; cursor: pointer; }
-.km-knop-rand { border: 2px solid var(--km-inkt); background: transparent; color: var(--km-inkt); }
+a.km-knop-rand, button.km-knop-rand { border: 2px solid var(--km-inkt); background: transparent; color: var(--km-inkt); }
 
 /* Secties */
 .km-sectie { padding-block: 80px; }
@@ -130,4 +130,83 @@ textarea:focus-visible, summary:focus-visible { outline: 3px solid var(--km-inkt
   .km-stapel::after { inset: 4px; }
   .km-bon { padding: 20px 18px 16px; }
   .km-sectie { padding-block: 56px; }
+}
+
+/* ---------- Pagina's van de plugin: werkbon, klusser worden, inloggen, mijn klussen ---------- */
+.klusmaat-pagina .wp-block-post-title { display: none; } /* de kop staat al in de inhoud */
+.klusmaat-pagina main.km-smal { max-width: var(--km-breedte); padding-block: 24px 88px; }
+.km-pagina { display: flex; flex-direction: column; gap: 28px; }
+.km-paginatitel { margin: 0; font-size: clamp(34px, 5vw, 60px); line-height: 1; font-weight: 850; letter-spacing: -1.5px; }
+.km-pagina .km-inleiding { max-width: 640px; }
+.km-pagina .km-bon { transform: none; }
+.km-pagina .km-stapel { transform: none; }
+
+/* Twee bladen naast elkaar, op een telefoon onder elkaar */
+.km-bladen { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px; align-items: start; }
+.km-bladen .km-stapel { max-width: none; padding: 0; }
+.km-bladen .km-stapel::before, .km-bladen .km-stapel::after { display: none; }
+.km-bladen .km-bon { padding: 28px; }
+.km-formulier-smal { max-width: 600px; }
+@media (max-width: 899px) { .km-bladen { grid-template-columns: minmax(0, 1fr); } }
+
+.km-veldgroep { display: flex; flex-direction: column; gap: 4px; }
+.km-veldgroep .km-label { margin-bottom: 0; }
+.km-hulp-klein { margin: 0; font-size: 15px; color: var(--km-potlood); }
+.km-bon-geel .km-hulp-klein { color: #3A3F4A; }
+.km-bon .km-veld { font-size: 24px; }
+.km-bon select.km-veld { font-size: 24px; }
+.km-bon textarea.km-veld { font-size: 22px; }
+.km-bon input[type="password"] { font-family: var(--km-font-pen); font-size: 24px; font-weight: 700; color: var(--km-balpen);
+  padding: 4px 0 6px; border: 0; border-bottom: 2px solid var(--km-veldlijn); border-radius: 0; background: transparent; min-height: 48px; width: 100%; }
+
+/* Keuzes: radio's en vakjes onder elkaar, groot genoeg om te raken */
+.km-keuze { margin: 0; padding: 0; border: 0; min-width: 0; }
+.km-keuze legend { padding: 0; margin-bottom: 6px; }
+.km-opties-rij { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 0 16px; }
+.km-optie { display: flex; align-items: center; gap: 12px; min-height: 44px; font-size: 18px; cursor: pointer; }
+.km-optie input { flex: 0 0 auto; width: 22px; height: 22px; margin: 0; accent-color: var(--km-inkt); }
+
+/* Fouten: tekst en lijn, nooit alleen kleur */
+.km-fout { margin: 0; font-size: 15px; font-weight: 700; color: var(--km-fout); }
+.km-fout::before { content: "Let op: "; }
+.km-bon .km-veld-fout { border-bottom: 4px solid var(--km-fout); }
+.km-bon textarea.km-veld-fout { border: 2px solid var(--km-fout); border-left-width: 6px; }
+.km-melding { padding: 14px 18px; border-left: 6px solid var(--km-inkt); background: var(--km-papier); max-width: 640px; }
+.km-melding p { margin: 0; font-size: 17px; font-weight: 600; }
+.km-melding-fout { border-left-color: var(--km-fout); }
+.km-melding-goed { border-left-color: var(--km-goed); }
+.km-bon button[type="submit"], .km-bon .km-knop { align-self: flex-start; }
+
+/* Persoonlijke link */
+.km-sleutel { max-width: 640px; }
+.km-link { font-size: 20px; overflow-wrap: anywhere; }
+.km-acties { display: flex; flex-wrap: wrap; gap: 12px; margin: 0; }
+.km-pagina .km-knop-rand { background: transparent; border: 2px solid var(--km-inkt); color: var(--km-inkt); }
+
+/* Klusgegevens en lijsten */
+.km-klein { font-size: 24px; margin: 8px 0 0; letter-spacing: -0.5px; }
+.km-gegevens { display: grid; grid-template-columns: max-content 1fr; gap: 6px 20px; margin: 0; }
+.km-gegevens dt { color: var(--km-potlood); font-size: 15px; padding-top: 3px; }
+.km-gegevens dd { margin: 0; font-size: 18px; overflow-wrap: anywhere; }
+.km-lijst, .km-klussen { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+.km-klus { background: var(--km-papier); padding: 20px 22px; display: flex; flex-direction: column; gap: 10px; max-width: 760px; box-shadow: 0 1px 0 rgba(22, 27, 38, 0.35); }
+.km-klus-kop { font-size: 18px; }
+.km-klus-kop strong { font-family: var(--km-font-pen); font-size: 24px; color: var(--km-balpen); }
+.km-klus p { margin: 0; font-size: 17px; }
+.km-tijd { font-size: 14px; color: var(--km-potlood); }
+.km-saldo { display: flex; align-items: baseline; gap: 10px; font-size: 17px; color: var(--km-potlood); }
+.km-saldo-getal { font-family: var(--km-font-pen); font-size: 48px; font-weight: 700; line-height: 1; color: var(--km-balpen); }
+
+.km-tabelrand { overflow-x: auto; max-width: 760px; }
+.km-tabel { width: 100%; border-collapse: collapse; font-size: 16px; }
+.km-tabel th { text-align: left; font-weight: 700; border-bottom: 2px solid var(--km-inkt); padding: 8px 12px 8px 0; }
+.km-tabel td { padding: 8px 12px 8px 0; border-bottom: 1px solid var(--km-rijlijn); }
+.km-tabel td:nth-child(n+3), .km-tabel th:nth-child(n+3) { text-align: right; }
+.km-pagina a { color: var(--km-balpen); }
+.km-pagina a.km-knop { color: var(--km-papier); }
+.km-pagina a.km-knop-rand { color: var(--km-inkt); }
+@media (max-width: 640px) {
+  .km-bladen .km-bon { padding: 20px 18px; }
+  .km-gegevens { grid-template-columns: 1fr; gap: 0; }
+  .km-gegevens dd { margin-bottom: 8px; }
 }

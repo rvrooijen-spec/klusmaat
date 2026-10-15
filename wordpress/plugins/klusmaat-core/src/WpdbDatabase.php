@@ -17,10 +17,11 @@ final class WpdbDatabase implements Database
 
     public function execute(string $sql, array $params = []): int
     {
-        $this->wpdb->suppress_errors(true);
-        $r = $this->wpdb->query($this->voorbereid($sql, $params));
-        $this->controleer($r);
-        return (int) $r;
+        return (int) $this->stil(function () use ($sql, $params) {
+            $r = $this->wpdb->query($this->voorbereid($sql, $params));
+            $this->controleer();
+            return $r;
+        });
     }
 
     public function insert(string $sql, array $params = []): int
@@ -31,26 +32,29 @@ final class WpdbDatabase implements Database
 
     public function fetchAll(string $sql, array $params = []): array
     {
-        $this->wpdb->suppress_errors(true);
-        $r = $this->wpdb->get_results($this->voorbereid($sql, $params), ARRAY_A);
-        $this->controleer($r);
-        return $r ?? [];
+        return $this->stil(function () use ($sql, $params) {
+            $r = $this->wpdb->get_results($this->voorbereid($sql, $params), ARRAY_A);
+            $this->controleer();
+            return $r ?? [];
+        });
     }
 
     public function fetchRow(string $sql, array $params = []): ?array
     {
-        $this->wpdb->suppress_errors(true);
-        $r = $this->wpdb->get_row($this->voorbereid($sql, $params), ARRAY_A);
-        $this->controleer($r);
-        return $r ?: null;
+        return $this->stil(function () use ($sql, $params) {
+            $r = $this->wpdb->get_row($this->voorbereid($sql, $params), ARRAY_A);
+            $this->controleer();
+            return $r ?: null;
+        });
     }
 
     public function fetchValue(string $sql, array $params = []): mixed
     {
-        $this->wpdb->suppress_errors(true);
-        $r = $this->wpdb->get_var($this->voorbereid($sql, $params));
-        $this->controleer($r);
-        return $r;
+        return $this->stil(function () use ($sql, $params) {
+            $r = $this->wpdb->get_var($this->voorbereid($sql, $params));
+            $this->controleer();
+            return $r;
+        });
     }
 
     public function transactional(callable $werk): mixed
@@ -77,27 +81,52 @@ final class WpdbDatabase implements Database
         return $this->wpdb->prefix . 'klusmaat_' . $naam;
     }
 
-    /** Zet "?" om naar %d/%s via wpdb::prepare, op basis van het type van de waarde. */
+    /** Zet databasefouten uit het scherm en geeft de vorige instelling terug na afloop. */
+    private function stil(callable $werk): mixed
+    {
+        $vorige = $this->wpdb->suppress_errors(true);
+        try {
+            return $werk();
+        } finally {
+            $this->wpdb->suppress_errors($vorige);
+        }
+    }
+
+    /**
+     * Zet "?" om naar %d of %s en laat wpdb::prepare de waarden veilig invoegen. Een null-waarde wordt
+     * een echte NULL: anders maakt prepare er een lege tekst van en weigert MySQL die in een getalkolom.
+     */
     private function voorbereid(string $sql, array $params): string
     {
         if ($params === []) {
             return $sql;
         }
+        $waarden = [];
         $i = 0;
-        $sql = preg_replace_callback('/\?/', static function () use (&$i, $params): string {
-            $v = $params[$i++] ?? null;
-            return is_int($v) ? '%d' : '%s';
+        $sql = preg_replace_callback('/\?/', static function () use (&$i, $params, &$waarden): string {
+            if (!array_key_exists($i, $params)) {
+                throw new DatabaseFout('Te weinig waarden voor de query.');
+            }
+            $v = $params[$i++];
+            if ($v === null) {
+                return 'NULL';
+            }
+            $waarden[] = is_bool($v) ? (int) $v : $v;
+            return is_int($v) || is_bool($v) ? '%d' : '%s';
         }, $sql);
-        return $this->wpdb->prepare($sql, ...array_map(static fn($v) => is_bool($v) ? (int) $v : $v, array_values($params)));
+        if ($i !== count($params)) {
+            throw new DatabaseFout('Te veel waarden voor de query.');
+        }
+        return $waarden === [] ? $sql : $this->wpdb->prepare($sql, ...$waarden);
     }
 
-    private function controleer(mixed $resultaat): void
+    private function controleer(): void
     {
         if ($this->wpdb->last_error === '') {
             return;
         }
         $fout = $this->wpdb->last_error;
-        $duplicaat = stripos($fout, 'duplicate entry') !== false;
+        $duplicaat = stripos($fout, 'duplicate entry') !== false || stripos($fout, 'unique constraint') !== false;
         $this->wpdb->last_error = '';
         throw new DatabaseFout($fout, $duplicaat);
     }
