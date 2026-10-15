@@ -7,7 +7,7 @@ use Klusmaat\Core\Wp\Plugin as Kern;
 use Klusmaat\Core\Wp\WpCatalogus;
 
 /**
- * "Zelf doen": artikelen waarmee mensen een klus zelf kunnen oppakken.
+ * Blog "Zelf doen": artikelen waarmee mensen een klus zelf kunnen oppakken.
  * Twee soorten: een stappenplan (met benodigdheden, moeilijkheid en afbeeldingen per stap) en een tipartikel.
  * Het beheer vult de velden in; deze klasse bewaart ze, toont ze en geeft zoekmachines de gegevens mee.
  */
@@ -40,7 +40,7 @@ final class Artikelen
     {
         register_post_type(self::TYPE, [
             'labels' => [
-                'name' => 'Zelf doen', 'singular_name' => 'Artikel', 'menu_name' => 'Zelf doen', 'add_new' => 'Nieuw artikel', 'add_new_item' => 'Nieuw artikel',
+                'name' => 'Blog', 'singular_name' => 'Artikel', 'menu_name' => 'Blog', 'add_new' => 'Nieuw artikel', 'add_new_item' => 'Nieuw artikel',
                 'edit_item' => 'Artikel bewerken', 'all_items' => 'Alle artikelen', 'search_items' => 'Artikelen zoeken', 'not_found' => 'Nog geen artikelen.',
             ],
             'public' => true, 'has_archive' => false, 'show_in_rest' => true, 'menu_icon' => 'dashicons-hammer', 'menu_position' => 27,
@@ -321,14 +321,14 @@ nummer()})();</script>';
     /** [klusmaat_artikelen aantal="12" compact="0"] */
     public static function overzicht($atts = []): string
     {
-        $a = shortcode_atts(['aantal' => '12', 'compact' => '0'], (array) $atts);
+        $a = shortcode_atts(['aantal' => '12', 'compact' => '0', 'soort' => '', 'kop' => 'Eerst zelf proberen?'], (array) $atts);
         $compact = $a['compact'] === '1';
-        $soort = sanitize_key((string) ($_GET['soort'] ?? ''));
+        $soort = sanitize_key($compact ? (string) $a['soort'] : (string) ($_GET['soort'] ?? ''));
         $soort = isset(self::SOORTEN[$soort]) ? $soort : '';
         $klus = sanitize_title((string) ($_GET['klus'] ?? ''));
         $pagina = max(1, absint($_GET['pagina'] ?? 1));
         $args = ['post_type' => self::TYPE, 'post_status' => 'publish', 'posts_per_page' => max(1, min(48, (int) $a['aantal'])), 'paged' => $compact ? 1 : $pagina, 'orderby' => 'date', 'order' => 'DESC'];
-        if (!$compact && $soort !== '') {
+        if ($soort !== '') {
             $args['meta_query'] = [['key' => '_km_soort', 'value' => $soort]];
         }
         if (!$compact && $klus !== '') {
@@ -339,9 +339,9 @@ nummer()})();</script>';
         if ($compact && !$q->have_posts()) {
             return '';
         }
-        $h = $compact ? '<div class="km-artikelrijen-blok"><h2 class="km-sectiekop">Eerst zelf proberen?</h2>' : '<div class="km-pagina km-overzicht">';
+        $h = $compact ? '<div class="km-artikelrijen-blok"><h2 class="km-sectiekop">' . esc_html((string) $a['kop']) . '</h2>' : '<div class="km-pagina km-overzicht">';
         if (!$compact) {
-            $h .= '<h1 class="km-paginatitel">Zelf doen</h1><p class="km-inleiding">Stappenplannen en tips van klussers. Doe het zelf als het kan, en bel een klusser als het niet meer leuk is.</p>';
+            $h .= '<h1 class="km-paginatitel">Blog</h1><p class="km-inleiding">Stappenplannen en tips van klussers. Doe het zelf als het kan, en bel een klusser als het niet meer leuk is.</p>';
             $chip = static function (string $tekst, string $url, bool $actief): string {
                 return '<a class="km-chip' . ($actief ? ' actief' : '') . '" href="' . esc_url($url) . '"' . ($actief ? ' aria-current="true"' : '') . '>' . esc_html($tekst) . '</a>';
             };
@@ -396,7 +396,7 @@ nummer()})();</script>';
                 $h .= '<nav class="km-paginering" aria-label="Pagina\'s">' . paginate_links(['base' => add_query_arg('pagina', '%#%', $basis), 'format' => '', 'current' => $pagina, 'total' => (int) $q->max_num_pages, 'add_args' => array_filter(['soort' => $soort, 'klus' => $klus])]) . '</nav>';
             }
             if ($compact) {
-                $h .= '<p><a class="km-knop km-knop-rand" href="' . esc_url($basis) . '">Alle artikelen</a></p>';
+                $h .= '<p><a class="km-knop km-knop-rand" href="' . esc_url($soort !== '' ? add_query_arg('soort', $soort, $basis) : $basis) . '">' . ($soort === 'tip' ? 'Alle tips' : ($soort === 'stappenplan' ? 'Alle stappenplannen' : 'Alle artikelen')) . '</a></p>';
             }
         }
         return $h . '</div>';
