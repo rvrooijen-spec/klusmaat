@@ -210,3 +210,11 @@ a.km-knop-rand, button.km-knop-rand { border: 2px solid var(--km-inkt); backgrou
   .km-gegevens { grid-template-columns: 1fr; gap: 0; }
   .km-gegevens dd { margin-bottom: 8px; }
 }
+
+/* Menu op een telefoon: één rij, compacter */
+@media (max-width: 640px) {
+  .km-kop { padding-block: 16px; }
+  .km-kop .wp-block-navigation__container { gap: 16px; flex-wrap: wrap; justify-content: flex-start; }
+  .km-menu { gap: 16px; font-size: 15px; width: 100%; }
+  .km-kop .wp-block-navigation .km-knop-rand a { padding: 6px 12px; }
+}
