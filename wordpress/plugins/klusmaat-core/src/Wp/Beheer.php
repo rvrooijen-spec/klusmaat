@@ -13,6 +13,7 @@ final class Beheer
     public static function haken(): void
     {
         add_action('admin_menu', [self::class, 'menu'], 5);
+        add_action('admin_menu', [self::class, 'menuOpruimen'], 999);
         add_action('admin_post_klusmaat_klusser_status', [self::class, 'klusserStatus']);
         add_action('admin_post_klusmaat_credits', [self::class, 'credits']);
         add_action('admin_post_klusmaat_klus_sluiten', [self::class, 'klusSluiten']);
@@ -31,8 +32,13 @@ final class Beheer
         add_submenu_page('klusmaat', 'Klussers', 'Klussers', Plugin::BEHEER, 'klusmaat-klussers', [self::class, 'klussers']);
         add_submenu_page('klusmaat', 'Logboek', 'Logboek', Plugin::BEHEER, 'klusmaat-logboek', [self::class, 'logboek']);
         add_submenu_page('klusmaat', 'Instellingen', 'Instellingen', Plugin::BEHEER, 'klusmaat-instellingen', [self::class, 'instellingen']);
-        // De verborgen berichttype heeft een eigen menu-item gekregen; dat hebben we niet nodig.
+    }
+
+    /** Het berichttype voegt zelf een menu-item toe; dat hebben we niet nodig. */
+    public static function menuOpruimen(): void
+    {
         remove_submenu_page('klusmaat', 'edit.php?post_type=klusmaat_klus');
+        remove_submenu_page('klusmaat', 'post-new.php?post_type=klusmaat_klus');
     }
 
     public static function stijl(): void
