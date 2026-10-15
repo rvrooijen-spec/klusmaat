@@ -1,0 +1,100 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/theme.json",
+  "version": 3,
+  "settings": {
+    "appearanceTools": false,
+    "layout": { "contentSize": "860px", "wideSize": "1160px" },
+    "color": {
+      "custom": false, "customDuotone": false, "customGradient": false,
+      "defaultPalette": false, "defaultGradients": false, "defaultDuotone": false,
+      "gradients": [], "duotone": [],
+      "palette": [
+        { "slug": "beton", "name": "Beton", "color": "#E3E6DF" },
+        { "slug": "papier", "name": "Papier", "color": "#FCFCF9" },
+        { "slug": "inkt", "name": "Inkt", "color": "#161B26" },
+        { "slug": "potlood", "name": "Potlood", "color": "#4B5260" },
+        { "slug": "balpen", "name": "Balpen", "color": "#2547B5" },
+        { "slug": "doorslag-geel", "name": "Doorslag geel", "color": "#F4E8A0" },
+        { "slug": "doorslag-roze", "name": "Doorslag roze", "color": "#F2CBCB" },
+        { "slug": "markeer", "name": "Markeerstift", "color": "#F5DC00" },
+        { "slug": "veldlijn", "name": "Veldlijn", "color": "#767B70" },
+        { "slug": "rijlijn", "name": "Rijlijn", "color": "#C9CEC4" },
+        { "slug": "fout", "name": "Fout", "color": "#9E1B1B" },
+        { "slug": "goed", "name": "Goed", "color": "#1F6B3A" }
+      ]
+    },
+    "typography": {
+      "customFontSize": false, "dropCap": false, "fluid": false,
+      "fontFamilies": [
+        {
+          "slug": "gedrukt", "name": "Archivo (gedrukt)",
+          "fontFamily": "'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif",
+          "fontFace": [
+            { "fontFamily": "Archivo", "fontWeight": "400 900", "fontStretch": "62% 125%", "fontStyle": "normal", "fontDisplay": "swap",
+              "src": ["file:./assets/fonts/archivo-var.woff"] }
+          ]
+        },
+        {
+          "slug": "pen", "name": "Kalam (in pen)",
+          "fontFamily": "'Kalam', 'Segoe Print', 'Bradley Hand', cursive",
+          "fontFace": [
+            { "fontFamily": "Kalam", "fontWeight": "400", "fontStyle": "normal", "fontDisplay": "swap", "src": ["file:./assets/fonts/kalam-400.woff"] },
+            { "fontFamily": "Kalam", "fontWeight": "700", "fontStyle": "normal", "fontDisplay": "swap", "src": ["file:./assets/fonts/kalam-700.woff"] }
+          ]
+        }
+      ],
+      "fontSizes": [
+        { "slug": "hulp", "name": "Hulptekst", "size": "15px" },
+        { "slug": "tekst", "name": "Tekst", "size": "18px" },
+        { "slug": "inleiding", "name": "Inleiding", "size": "clamp(20px, 2vw, 22px)" },
+        { "slug": "subkop", "name": "Subkop", "size": "clamp(22px, 2vw, 24px)" },
+        { "slug": "sectiekop", "name": "Sectiekop", "size": "clamp(30px, 4vw, 48px)" },
+        { "slug": "titel", "name": "Titel", "size": "clamp(42px, 6.2vw, 84px)" }
+      ]
+    },
+    "spacing": {
+      "units": ["px", "rem", "%"],
+      "customSpacingSize": false,
+      "spacingSizes": [
+        { "slug": "1", "name": "4", "size": "4px" }, { "slug": "2", "name": "8", "size": "8px" },
+        { "slug": "3", "name": "12", "size": "12px" }, { "slug": "4", "name": "16", "size": "16px" },
+        { "slug": "5", "name": "24", "size": "24px" }, { "slug": "6", "name": "32", "size": "32px" },
+        { "slug": "7", "name": "48", "size": "48px" }, { "slug": "8", "name": "64", "size": "64px" },
+        { "slug": "9", "name": "88", "size": "88px" }
+      ]
+    },
+    "border": { "radius": false, "color": true, "style": true, "width": true },
+    "shadow": { "defaultPresets": false, "presets": [] },
+    "custom": { "breedte": "1160px", "breedteSmal": "860px" }
+  },
+  "styles": {
+    "color": { "background": "var(--wp--preset--color--beton)", "text": "var(--wp--preset--color--inkt)" },
+    "typography": { "fontFamily": "var(--wp--preset--font-family--gedrukt)", "fontSize": "var(--wp--preset--font-size--tekst)", "lineHeight": "1.5" },
+    "spacing": { "blockGap": "24px" },
+    "elements": {
+      "link": {
+        "color": { "text": "var(--wp--preset--color--balpen)" },
+        "typography": { "textDecoration": "underline" },
+        ":hover": { "typography": { "textDecoration": "underline" } }
+      },
+      "heading": {
+        "typography": { "fontWeight": "850", "lineHeight": "1.05", "letterSpacing": "-1px" }
+      },
+      "h1": { "typography": { "fontSize": "var(--wp--preset--font-size--titel)", "lineHeight": "0.98", "letterSpacing": "-2px" } },
+      "h2": { "typography": { "fontSize": "var(--wp--preset--font-size--sectiekop)" } },
+      "h3": { "typography": { "fontSize": "var(--wp--preset--font-size--subkop)", "fontWeight": "700", "lineHeight": "1.25", "letterSpacing": "0" } },
+      "button": {
+        "color": { "background": "var(--wp--preset--color--inkt)", "text": "var(--wp--preset--color--papier)" },
+        "border": { "radius": "0" },
+        "typography": { "fontWeight": "700", "fontSize": "18px", "textDecoration": "none" }
+      }
+    },
+    "blocks": {
+      "core/site-title": { "typography": { "fontWeight": "850", "fontSize": "28px", "letterSpacing": "-0.5px" }, "elements": { "link": { "color": { "text": "var(--wp--preset--color--inkt)" }, "typography": { "textDecoration": "none" } } } }
+    }
+  },
+  "templateParts": [
+    { "name": "header", "title": "Kop", "area": "header" },
+    { "name": "footer", "title": "Voet", "area": "footer" }
+  ]
+}

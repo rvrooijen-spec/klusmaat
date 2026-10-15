@@ -1,0 +1,25 @@
+name: Thema-release
+# Maak een tag zoals theme-v0.2.0 om een nieuwe versie van het thema uit te brengen.
+# WordPress toont daarna "Nu bijwerken" bij Weergave > Thema's.
+on:
+  push:
+    tags: ['theme-v*']
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Versie in style.css gelijkzetten met de tag
+        run: |
+          v="${GITHUB_REF_NAME#theme-v}"
+          sed -i "s/^Version: .*/Version: ${v}/" wordpress/themes/klusmaat-theme/style.css
+      - name: Zip maken
+        run: |
+          cd wordpress/themes
+          zip -r ../../klusmaat-theme.zip klusmaat-theme -x '*/tools/*'
+      - name: Release publiceren
+        uses: softprops/action-gh-release@v2
+        with:
+          files: klusmaat-theme.zip
