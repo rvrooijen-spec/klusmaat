@@ -28,7 +28,7 @@ function km_demo(string $map): void
     }
     $maak = function (string $titel, string $slug, string $uitleg, string $tekst, array $g, ?WP_Term $t): int {
         $id = wp_insert_post(['post_type' => 'klusmaat_artikel', 'post_status' => 'publish', 'post_title' => $titel, 'post_name' => $slug, 'post_excerpt' => $uitleg, 'post_content' => $tekst]);
-        $g = \Klusmaat\Zelfdoen\Artikelen::schoon($g);
+        $g = \Klusmaat\Blog\Artikelen::schoon($g);
         update_post_meta($id, '_km_artikel', $g);
         update_post_meta($id, '_km_soort', $g['soort']);
         if ($t) {

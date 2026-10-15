@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Klusmaat\Zelfdoen;
+namespace Klusmaat\Blog;
 
 use Klusmaat\Core\Wp\Plugin as Kern;
 use Klusmaat\Core\Wp\WpCatalogus;

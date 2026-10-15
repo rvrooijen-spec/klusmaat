@@ -219,7 +219,7 @@ a.km-knop-rand, button.km-knop-rand { border: 2px solid var(--km-inkt); backgrou
   .km-kop .wp-block-navigation .km-knop-rand a { padding: 6px 12px; }
 }
 
-/* ---------- Zelf doen: artikelen (plugin klusmaat-zelfdoen) ---------- */
+/* ---------- Zelf doen: artikelen (plugin klusmaat-blog) ---------- */
 .km-overzicht .km-filters { display: flex; flex-direction: column; gap: 10px; }
 .km-chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .km-chip { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border: 2px solid var(--km-inkt); color: var(--km-inkt) !important; text-decoration: none; font-weight: 600; font-size: 16px; }
